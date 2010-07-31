@@ -4,6 +4,7 @@ from urllib import quote
 
 """
     TODO:
+        implement param checks
         paths 
         encoded polylines: http://code.google.com/p/py-gpolyencode/
 """
@@ -65,7 +66,7 @@ class CenterMap(Map):
         self.center = quote(address)
 
     def set_lat_lon(self,lat,lon):
-        self.center = "%s,%s" % (quote(lat),quote(lon))
+        self.center = "%s,%s" % (lat,lon)
 
     def generate_url(self):
         self.check_parameters();
