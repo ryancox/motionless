@@ -155,3 +155,28 @@ class VisibleMap(Map):
             self.size_y,
             self._get_sensor(),
             "|".join(self.locations))
+
+class PathMap(Map):
+    def __init__(self):
+        Map.__init__(self)                    
+        self.locations = []
+
+    def add_address(self, address):
+        self.locations.append(quote(address))
+
+    def add_lat_lon(self, lat, lon):
+        self.locations.append("%s,%s" % (quote(lat),quote(lon)))
+
+    def generate_url(self):
+        self.check_parameters();
+        return "%smaptype=%s&format=%s&size=%sx%s&sensor=%s&path=%s" % (
+            self.base_url,
+            self.maptype,
+            self.format,
+            self.size_x,
+            self.size_y,
+            self._get_sensor(),
+            "|".join(self.locations))
+
+class RegionMap(Map):
+    pass
