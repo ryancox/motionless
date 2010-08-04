@@ -1,5 +1,9 @@
 
-motionless is a Python library that takes the pain out of generating Google Static Map URLs. Three map types are supported.
+motionless is a Python library that takes the pain out of generating [Google Static Map](http://code.google.com/apis/maps/documentation/staticmaps/) URLs. Three map types are supported. Each is illustrated below. For fully worked code see the examples directory for code that parses and visualizes bot GeoRSS feeds and GPX files. 
+
+Code is licensed under Apache 2.0
+
+For DecoratedMaps, paths are encoded if [gpolyencode](http://code.google.com/p/py-gpolyencode/) is present. This is useful for keeping URLs with in the 2048 character limit imposed by the service.
 
 CenterMap
 =========
@@ -9,6 +13,12 @@ CenterMap
     print cmap.generate_url()
 
 ![SFMOMA](http://maps.google.com/maps/api/staticmap?maptype=roadmap&format=png&center=151%20third%20st%2C%20san%20francisco%2C%20ca&zoom=17&size=400x400&sensor=false)
+
+    from motionless import CenterMap
+    cmap = CenterMap(lat=48.858278,lon=2.294489,maptype='satellite')
+    print cmap.generate_url()
+
+![La Tour Eiffel](http://maps.google.com/maps/api/staticmap?maptype=satellite&format=png&center=48.858278,2.294489&zoom=17&size=400x400&sensor=false)
 
 VisibleMap
 ==========
