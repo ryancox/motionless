@@ -1,28 +1,24 @@
-
-import urllib2
 from urllib import quote 
+import re
 
-"""
-    TODO:
-        confirm color format / opacity    
-        properly handle
-            path weight,color,opacity,fillcolor
-
-        change gpx to airport
-        handle 414 - URI too long
-"""
+class Color(object):
+    COLORS = ['black', 'brown', 'green', 'purple', 'yellow', 'blue', 'gray', 'orange', 'red', 'white']
+    pat = re.compile("0x[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8}")
+    @staticmethod
+    def is_valid_color(color):
+        return Color.pat.match(color) or color in Color.COLORS
+         
 
 class Marker(object):
     SIZES =  ['tiny','mid','small']
-    COLORS = ['black', 'brown', 'green', 'purple', 'yellow', 'blue', 'gray', 'orange', 'red', 'white']
     LABELS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
     def __init__(self, size, color, label):
         if size and size not in Marker.SIZES:
             raise ValueError("[%s] is not a valid marker size. Valid sizes include %s" % (size,Marker.SIZES))
         if label and (len(label) <> 1 or not label in Marker.LABELS):
             raise ValueError("[%s] is not a valid label. Valid labels are a single character 'A'..'Z' or '0'..'9'"  % label)
-        if color and color not in Marker.COLORS:
-            raise ValueError("[%s] is not a valid color. Valid colors include %s"  % ( color, Marker.COLORS ))
+        if color and color not in Color.COLORS:
+            raise ValueError("[%s] is not a valid color. Valid colors include %s"  % ( color, Color.COLORS ))
         self.size = size
         self.color = color
         self.label = label
@@ -53,6 +49,9 @@ class Map(object):
         self.format = 'png'
         self.maptype = maptype 
 
+    def __str__(self):
+        return self.generate_url()                        
+
     def check_parameters(self):
         if self.format not in Map.FORMATS:
             raise ValueError("[%s] is not a valid file format. Valid formats include %s" % (self.format,Map.FORMATS))
@@ -78,7 +77,7 @@ class Map(object):
 
 class CenterMap(Map):
     ZOOM_RANGE = range(1,21)
-    def __init__(self, address=None, lat=None, lon=None, zoom=14, size_x=400, size_y=400, maptype='roadmap'):
+    def __init__(self, address=None, lat=None, lon=None, zoom=17, size_x=400, size_y=400, maptype='roadmap'):
         Map.__init__(self,size_x=size_x, size_y=size_y, maptype=maptype)                    
         if address: 
             self.center = quote(address)
@@ -135,10 +134,12 @@ class VisibleMap(Map):
         return url
 
 class DecoratedMap(Map):
-    def __init__(self, size_x=400, size_y=400,maptype='roadmap',region=False,fillcolor='green'):
+    def __init__(self, size_x=400, size_y=400,maptype='roadmap',region=False,fillcolor='green',pathweight=None,pathcolor=None,):
         Map.__init__(self,size_x=size_x, size_y=size_y,maptype=maptype)                    
         self.markers = []
         self.fillcolor = fillcolor
+	self.pathweight = pathweight
+	self.pathcolor = pathcolor
         self.region = region
         self.path = []
         self.contains_addresses = False
@@ -154,6 +155,12 @@ class DecoratedMap(Map):
 
         if len(self.path) == 0 and len(self.markers) == 0:
             raise ValueError("Must specify points in path or markers")
+
+	if not Color.is_valid_color(self.fillcolor):
+            raise ValueError("%s is not a valid fill color. Must be 24 or 32 bit value or one of %s" % (self.fillcolor,Color.COLORS))
+
+	if self.pathcolor and not Color.is_valid_color(self.pathcolor):
+            raise ValueError("%s is not a valid path color. Must be 24 or 32 bit value or one of %s" % (self.pathcolor,Color.COLORS))
 
     def _generate_markers(self):
         styles = set()
@@ -230,10 +237,21 @@ class DecoratedMap(Map):
             url = "%s&%s" % ( url, self._generate_markers())
 
         if len(self.path) > 0:
+            url = "%s&path=" % url
+
+            if self.pathcolor:
+                url = "%scolor:%s|" % ( url, self.pathcolor)
+
+            if self.pathweight:
+                url = "%sweight:%s|" % ( url, self.pathweight)
+
+            if self.region:
+                url = "%sfillcolor:%s|" % ( url, self.fillcolor)
+
             if self._can_polyencode():
-                url = "%s&path=enc:%s" % ( url, self._polyencode())
+                url = "%senc:%s" % ( url, self._polyencode())
             else:
-                url = "%s&path=%s" % ( url, "|".join(self.path))
+                url = "%s%s" % ( url, "|".join(self.path))
 
         self._check_url(url)
 

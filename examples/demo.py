@@ -1,6 +1,5 @@
 
 from motionless import AddressMarker, LatLonMarker,DecoratedMap, CenterMap, VisibleMap
-import xml.sax
 
 cmap = CenterMap(address='151 third st, san francisco, ca')
 
