@@ -20,7 +20,7 @@ class GPXHandler(xml.sax.handler.ContentHandler):
         if name == 'trk':
             self.gmap.add_marker(LatLonMarker(self.prev[0],self.prev[1],color='red',label='E'))
         
-munich = DecoratedMap(size_x=640,size_y=640)
+munich = DecoratedMap(size_x=640,size_y=640,pathweight=8,pathcolor='blue')
 parser = xml.sax.make_parser()
 parser.setContentHandler(GPXHandler(munich))
 parser.feed(open('Current.gpx').read())

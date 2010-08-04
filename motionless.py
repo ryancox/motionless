@@ -215,7 +215,7 @@ class DecoratedMap(Map):
                 data[(marker.size,marker.color,marker.label)].append(quote(marker.address))
             if isinstance(marker,LatLonMarker):
                 location = "%s,%s" % (marker.latitude, marker.longitude)
-                data[(marker.size,marker.color,marker.label)].append(quote(location))
+                data[(marker.size,marker.color,marker.label)].append(location)
         # build markers entries for URL 
         for style in data:
             locations = data[style]
