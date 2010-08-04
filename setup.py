@@ -13,7 +13,6 @@ METADATA = dict(
 	author = 'Ryan Cox',
 	author_email = 'ryan.a.cox@gmail.com',
 	description = 'An easy way to generate Google Static Map URLs with Python.',
-	long_description = open("README.md").read(),
 	license = 'Apache 2.0 License',
 	url = 'http://github.com/ryancox/motionless',
 	keywords = 'google static maps url api georss mapping gpx kml geo gis',

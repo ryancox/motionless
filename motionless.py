@@ -1,6 +1,43 @@
 from urllib import quote 
 import re
 
+"""
+    motionless is a library that takes the pain out of generating Google Static Map URLs.
+
+    For example code and documentation see: 
+        http://github.com/ryancox/motionless
+
+    For details about the GoogleStatic Map API see: 
+        http://code.google.com/apis/maps/documentation/staticmaps/
+
+    If you encounter problems, log an issue on github. If you have questions, drop me an
+    email at ryan.a.cox@gmail.com.
+
+"""
+
+"""
+
+      Copyright 2010 Ryan A Cox - ryan.a.cox@gmail.com 
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License. 
+
+"""
+
+
+
+__author__ = "Ryan Cox <ryan.a.cox@gmail.com>"
+__version__ = "1.0"   
+
 class Color(object):
     COLORS = ['black', 'brown', 'green', 'purple', 'yellow', 'blue', 'gray', 'orange', 'red', 'white']
     pat = re.compile("0x[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8}")

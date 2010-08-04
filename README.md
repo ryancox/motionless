@@ -1,5 +1,5 @@
 
-motionless is a Python library that takes the pain out of generating [Google Static Map](http://code.google.com/apis/maps/documentation/staticmaps/) URLs. Three map types are supported. Each is illustrated below. For fully worked code see the examples directory for code that parses and visualizes bot GeoRSS feeds and GPX files. 
+motionless is a Python library that takes the pain out of generating [Google Static Map](http://code.google.com/apis/maps/documentation/staticmaps/) URLs. Three map types are supported. Each is illustrated below. For fully worked code see the examples directory for code that parses and visualizes both GeoRSS feeds and GPX files. 
 
 Code is licensed under Apache 2.0
 
@@ -7,8 +7,9 @@ For DecoratedMaps, paths are encoded if [gpolyencode](http://code.google.com/p/p
 
 If you have run into bugs, open a github issue. If you have questions, feel free to email me at ryan.a.cox@gmail.com
 
--ryan
-
+-ryan 
+@ryancox
+[www.asciiarmor.com](http://www.asciiarmor.com)
 
 CenterMap
 =========
