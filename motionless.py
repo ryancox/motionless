@@ -286,7 +286,7 @@ class DecoratedMap(Map):
                 url = "%sfillcolor:%s|" % ( url, self.fillcolor)
 
             if self._can_polyencode():
-                url = "%senc:%s" % ( url, self._polyencode())
+                url = "%senc:%s" % ( url, quote(self._polyencode()))
             else:
                 url = "%s%s" % ( url, "|".join(self.path))
 
