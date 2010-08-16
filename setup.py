@@ -3,7 +3,7 @@
 import sys, os
 
 __author__ = 'Ryan Cox <ryan.a.cox@gmail.com>'
-__version__ = '1.0'
+__version__ = '1.1'
 
 # Distutils version
 METADATA = dict(
@@ -25,7 +25,7 @@ SETUPTOOLS_METADATA = dict(
 	classifiers = [
 		'Development Status :: 4 - Beta',
 		'Intended Audience :: Developers',
-		'License :: OSI Approved :: Apache Public Source License',
+		'License :: OSI Approved :: Apache Software License',
 		'Topic :: Software Development :: Libraries :: Python Modules',
                 'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
                 'Topic :: Multimedia :: Graphics :: Presentation',
