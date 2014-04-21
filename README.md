@@ -1,4 +1,3 @@
-
 motionless is a Python library that takes the pain out of generating [Google Static Map](http://code.google.com/apis/maps/documentation/staticmaps/) URLs. Three map types are supported. Each is illustrated below. For fully worked code see the examples directory for code that parses and visualizes both GeoRSS feeds and GPX files. 
 
 Code is licensed under Apache 2.0
@@ -46,7 +45,7 @@ DecoratedMap
 
 DecoratedMaps contain markers and/or paths. They are automatically sized and zoomed to make the specified elements visible.
 
-    from motionless import VisibleMap
+    from motionless import DecoratedMap
     dmap = DecoratedMap()
     dmap.add_marker(AddressMarker('1 Infinite Loop, Cupertino, CA',label='A'))
     dmap.add_marker(AddressMarker('1600 Amphitheatre Parkway Mountain View, CA',label='G'))
