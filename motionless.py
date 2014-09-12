@@ -4,10 +4,10 @@ import re
 """
     motionless is a library that takes the pain out of generating Google Static Map URLs.
 
-    For example code and documentation see: 
+    For example code and documentation see:
         http://github.com/ryancox/motionless
 
-    For details about the GoogleStatic Map API see: 
+    For details about the GoogleStatic Map API see:
         http://code.google.com/apis/maps/documentation/staticmaps/
 
     If you encounter problems, log an issue on github. If you have questions, drop me an
@@ -17,7 +17,7 @@ import re
 
 """
 
-      Copyright 2010 Ryan A Cox - ryan.a.cox@gmail.com 
+      Copyright 2010 Ryan A Cox - ryan.a.cox@gmail.com
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import re
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License. 
+   limitations under the License.
 
 """
 
@@ -94,7 +94,7 @@ class Map(object):
 
     def __init__(self, size_x, size_y, maptype, zoom=None):
 
-        self.base_url = 'http://maps.google.com/maps/api/staticmap?'
+        self.base_url = 'https://maps.google.com/maps/api/staticmap?'
         self.size_x = size_x
         self.size_y = size_y
         self.sensor = False
