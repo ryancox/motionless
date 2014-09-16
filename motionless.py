@@ -92,7 +92,7 @@ class Map(object):
     MAX_Y = 640
     ZOOM_RANGE = range(1, 21)
 
-    def __init__(self, size_x, size_y, maptype, zoom=None):
+    def __init__(self, size_x, size_y, maptype, zoom=None, key=None):
 
         self.base_url = 'https://maps.google.com/maps/api/staticmap?'
         self.size_x = size_x
@@ -101,6 +101,7 @@ class Map(object):
         self.format = 'png'
         self.maptype = maptype
         self.zoom = zoom
+        self.key = key
 
     def __str__(self):
         return self.generate_url()
@@ -138,6 +139,12 @@ class Map(object):
         else:
             return 'false'
 
+    def _get_key(self):
+        if self.key:
+            return ''.join(['key=', self.key, '&'])
+        else:
+            return ''
+
     def _check_url(self, url):
         if len(url) > Map.MAX_URL_LEN:
             raise ValueError(
@@ -148,9 +155,9 @@ class Map(object):
 class CenterMap(Map):
 
     def __init__(self, address=None, lat=None, lon=None, zoom=17, size_x=400,
-                 size_y=400, maptype='roadmap'):
+                 size_y=400, maptype='roadmap', key=None):
         Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype,
-                     zoom=zoom)
+                     zoom=zoom, key=key)
         if address:
             self.center = quote(address)
         elif lat and lon:
@@ -163,8 +170,9 @@ class CenterMap(Map):
 
     def generate_url(self):
         self.check_parameters()
-        url = "%smaptype=%s&format=%s&center=%s&zoom=%s&size=%sx%s&sensor=%s" % (
+        url = "%s%smaptype=%s&format=%s&center=%s&zoom=%s&size=%sx%s&sensor=%s" % (
             self.base_url,
+            self._get_key(),
             self.maptype,
             self.format,
             self.center,
@@ -179,8 +187,8 @@ class CenterMap(Map):
 
 class VisibleMap(Map):
 
-    def __init__(self, size_x=400, size_y=400, maptype='roadmap'):
-        Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype)
+    def __init__(self, size_x=400, size_y=400, maptype='roadmap', key=None):
+        Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype, key=key)
         self.locations = []
 
     def add_address(self, address):
@@ -191,8 +199,9 @@ class VisibleMap(Map):
 
     def generate_url(self):
         self.check_parameters()
-        url = "%smaptype=%s&format=%s&size=%sx%s&sensor=%s&visible=%s" % (
+        url = "%s%smaptype=%s&format=%s&size=%sx%s&sensor=%s&visible=%s" % (
             self.base_url,
+            self._get_key(),
             self.maptype,
             self.format,
             self.size_x,
@@ -208,9 +217,9 @@ class DecoratedMap(Map):
 
     def __init__(self, lat=None, lon=None, zoom=None, size_x=400, size_y=400,
                  maptype='roadmap', region=False, fillcolor='green',
-                 pathweight=None, pathcolor=None):
+                 pathweight=None, pathcolor=None, key=None):
         Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype,
-                     zoom=zoom)
+                     zoom=zoom, key=key)
         self.markers = []
         self.fillcolor = fillcolor
         self.pathweight = pathweight
@@ -313,8 +322,9 @@ class DecoratedMap(Map):
 
     def generate_url(self):
         self.check_parameters()
-        url = "%smaptype=%s&format=%s&size=%sx%s&sensor=%s" % (
+        url = "%s%smaptype=%s&format=%s&size=%sx%s&sensor=%s" % (
             self.base_url,
+            self._get_key(),
             self.maptype,
             self.format,
             self.size_x,
