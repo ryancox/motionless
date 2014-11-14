@@ -1,15 +1,11 @@
+===============================
+motionless
+===============================
 
-.. image:: https://badge.fury.io/py/motionless.png
-    :target: http://badge.fury.io/py/motionless
-
-.. image:: https://travis-ci.org/hanneshapke/motionless.png?branch=master
-        :target: https://travis-ci.org/hanneshapke/motionless
-
-.. image:: https://pypip.in/d/motionless/badge.png
-        :target: https://pypi.python.org/pypi/motionless
-
-.. image:: https://coveralls.io/repos/hanneshapke/motionless/badge.png
-        :target: https://coveralls.io/r/hanneshapke/motionless
+![https://badge.fury.io/py/motionless.png](http://badge.fury.io/py/motionless)
+![https://travis-ci.org/hanneshapke/motionless.png?branch=master](https://travis-ci.org/hanneshapke/motionless)
+![https://pypip.in/d/motionless/badge.png](https://pypi.python.org/pypi/motionless)
+![https://coveralls.io/repos/hanneshapke/motionless/badge.png](https://coveralls.io/r/hanneshapke/motionless)
 
 motionless is a Python library that takes the pain out of generating [Google Static Map](http://code.google.com/apis/maps/documentation/staticmaps/) URLs. Three map types are supported. Each is illustrated below. For fully worked code see the examples directory for code that parses and visualizes both GeoRSS feeds and GPX files. 
 
