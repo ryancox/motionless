@@ -111,7 +111,7 @@ class Map(object):
                 "[%s] is not a valid file format. Valid formats include %s" %
                 (self.format, Map.FORMATS))
 
-        if self.format not in Map.FORMATS:
+        if self.maptype not in Map.MAPTYPES:
             raise ValueError(
                 "[%s] is not a valid map type. Valid types include %s" %
                 (self.maptype, Map.MAPTYPES))
