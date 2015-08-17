@@ -92,7 +92,7 @@ class Map(object):
     MAX_Y = 640
     ZOOM_RANGE = range(1, 21)
 
-    def __init__(self, size_x, size_y, maptype, zoom=None):
+    def __init__(self, size_x, size_y, maptype, zoom=None, language='en'):
 
         self.base_url = 'http://maps.google.com/maps/api/staticmap?'
         self.size_x = size_x
@@ -101,6 +101,7 @@ class Map(object):
         self.format = 'png'
         self.maptype = maptype
         self.zoom = zoom
+        self.language = language
 
     def __str__(self):
         return self.generate_url()
@@ -163,7 +164,7 @@ class CenterMap(Map):
 
     def generate_url(self):
         self.check_parameters()
-        url = "%smaptype=%s&format=%s&center=%s&zoom=%s&size=%sx%s&sensor=%s" % (
+        url = "%smaptype=%s&format=%s&center=%s&zoom=%s&size=%sx%s&sensor=%s&language=%s" % (
             self.base_url,
             self.maptype,
             self.format,
@@ -171,7 +172,8 @@ class CenterMap(Map):
             self.zoom,
             self.size_x,
             self.size_y,
-            self._get_sensor())
+            self._get_sensor(),
+            self.language)
 
         self._check_url(url)
         return url
@@ -191,14 +193,15 @@ class VisibleMap(Map):
 
     def generate_url(self):
         self.check_parameters()
-        url = "%smaptype=%s&format=%s&size=%sx%s&sensor=%s&visible=%s" % (
+        url = "%smaptype=%s&format=%s&size=%sx%s&sensor=%s&visible=%s&language=%s" % (
             self.base_url,
             self.maptype,
             self.format,
             self.size_x,
             self.size_y,
             self._get_sensor(),
-            "|".join(self.locations))
+            "|".join(self.locations),
+            self.language)
 
         self._check_url(url)
         return url
@@ -313,13 +316,14 @@ class DecoratedMap(Map):
 
     def generate_url(self):
         self.check_parameters()
-        url = "%smaptype=%s&format=%s&size=%sx%s&sensor=%s" % (
+        url = "%smaptype=%s&format=%s&size=%sx%s&sensor=%s&language=%s" % (
             self.base_url,
             self.maptype,
             self.format,
             self.size_x,
             self.size_y,
-            self._get_sensor())
+            self._get_sensor(),
+            self.language)
 
         if self.center:
             url = "%s&center=%s" % (url, self.center)
