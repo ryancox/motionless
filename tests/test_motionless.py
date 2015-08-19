@@ -23,7 +23,7 @@ class Test(unittest.TestCase):
         # cmap1 = CenterMap(lat=48.858278,lon=2.294489,maptype='satellite')
         self.assertEqual(
             center_map.generate_url(),
-            'https://maps.google.com/maps/api/staticmap?maptype=roadmap&format=png&scale=1&center=151%20third%20st%2C%20san%20francisco%2C%20ca&zoom=17&size=400x400&sensor=false')
+            'https://maps.google.com/maps/api/staticmap?maptype=roadmap&format=png&scale=1&center=151%20third%20st%2C%20san%20francisco%2C%20ca&zoom=17&size=400x400&sensor=false&language=en')
 
 if __name__ == "__main__":
     unittest.main()
