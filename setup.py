@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 __author__ = 'Ryan Cox <ryan.a.cox@gmail.com>'
-__version__ = '1.1'
+__version__ = '1.2'
 
 test_requirements = [
     # TODO: put package test requirements here
