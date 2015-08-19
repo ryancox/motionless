@@ -1,7 +1,7 @@
 motionless
 ===============================
 
-![fury.io](https://badge.fury.io/py/motionless.png)
+[![fury.io](https://badge.fury.io/py/motionless.png)](https://pypi.python.org/pypi/motionless/)
 [![Build Status](https://travis-ci.org/ryancox/motionless.svg)](https://travis-ci.org/ryancox/motionless)
 [![Coverage Status](https://coveralls.io/repos/ryancox/motionless/badge.svg?branch=master&service=github)](https://coveralls.io/github/ryancox/motionless?branch=master)
 
