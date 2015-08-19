@@ -17,3 +17,5 @@ script:
   - python setup.py test
   - coverage run --source=motionless setup.py test
 after_success: coveralls
+
+sudo: false
