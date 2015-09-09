@@ -10,7 +10,7 @@ class GPXHandler(xml.sax.handler.ContentHandler):
 
     def startElement(self, name, attrs):
         if name == 'trkpt': 
-	    self.gmap.add_path_latlon(attrs['lat'],attrs['lon'])
+            self.gmap.add_path_latlon(attrs['lat'],attrs['lon'])
             self.prev = (attrs['lat'],attrs['lon'])
             if self.first:
                 self.first = False
@@ -34,12 +34,12 @@ htmlPage = """
 <p/>
 <img src="%s"/>
 </body>
-</html>	
+</html>
 """ % munich.generate_url()
 
 
 html = open("munich.html","w")
 html.write(htmlPage)
 html.close()
-print "munich.html file created"
+print("munich.html file created")
 
