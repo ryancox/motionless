@@ -1,4 +1,4 @@
-from urllib import quote
+from six.moves.urllib.parse import quote
 import re
 
 """
@@ -57,7 +57,7 @@ class Marker(object):
             raise ValueError(
                 "[%s] is not a valid marker size. Valid sizes include %s" %
                 (size, Marker.SIZES))
-        if label and (len(label) <> 1 or not label in Marker.LABELS):
+        if label and (len(label) != 1 or not label in Marker.LABELS):
             raise ValueError(
                 "[%s] is not a valid label. Valid labels are a single character 'A'..'Z' or '0'..'9'" % label)
         if color and color not in Color.COLORS:
@@ -90,8 +90,8 @@ class Map(object):
     FORMATS = ['png', 'png8', 'png32', 'gif', 'jpg', 'jpg-baseline']
     MAX_X = 640
     MAX_Y = 640
-    ZOOM_RANGE = range(1, 21)
-    SCALE_RANGE = range(1,5)
+    ZOOM_RANGE = list(range(1, 21))
+    SCALE_RANGE = list(range(1,5))
 
     def __init__(self, size_x, size_y, maptype, zoom=None, scale=1, key=None, language='en'):
         self.base_url = 'https://maps.google.com/maps/api/staticmap?'
@@ -249,7 +249,7 @@ class DecoratedMap(Map):
             raise ValueError(
                 "At least two path elements required if region is enabled")
 
-        if self.region and self.path[0] <> self.path[-1]:
+        if self.region and self.path[0] != self.path[-1]:
             raise ValueError(
                 "If region enabled, first and last path entry must be identical")
 

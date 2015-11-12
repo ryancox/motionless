@@ -1,4 +1,3 @@
-
 from motionless import AddressMarker, LatLonMarker,DecoratedMap, CenterMap, VisibleMap
 
 cmap = CenterMap(address='151 third st, san francisco, ca')
@@ -37,5 +36,5 @@ htmlPage = """
 html = open("demo.html","w")
 html.write(htmlPage)
 html.close()
-print "demo.html created"
+print("demo.html created")
 
