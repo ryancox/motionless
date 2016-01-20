@@ -1,5 +1,7 @@
-from six.moves.urllib.parse import quote
 import re
+
+from six.moves import urllib
+from six.moves.urllib.parse import quote
 
 """
     motionless is a library that takes the pain out of generating Google Static Map URLs.
@@ -47,12 +49,11 @@ class Color(object):
     def is_valid_color(color):
         return Color.pat.match(color) or color in Color.COLORS
 
-
 class Marker(object):
     SIZES = ['tiny', 'mid', 'small']
     LABELS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-    def __init__(self, size, color, label):
+    def __init__(self, size, color, label, icon_url):
         if size and size not in Marker.SIZES:
             raise ValueError(
                 "[%s] is not a valid marker size. Valid sizes include %s" %
@@ -64,22 +65,31 @@ class Marker(object):
             raise ValueError(
                 "[%s] is not a valid color. Valid colors include %s" %
                 (color, Color.COLORS))
+        if icon_url and not self.check_icon_url(icon_url):
+            raise ValueError(
+                "[%s] is not a valid url." % icon_url
+            )
         self.size = size
         self.color = color
         self.label = label
+        self.icon_url = quote(icon_url)
+
+    def check_icon_url(self, url):
+        result = urllib.parse.urlparse(url)
+        return result.scheme and result.netloc
 
 
 class AddressMarker(Marker):
 
-    def __init__(self, address, size=None, color=None, label=None):
-        Marker.__init__(self, size, color, label)
+    def __init__(self, address, size=None, color=None, label=None, icon_url=None):
+        Marker.__init__(self, size, color, label, icon_url)
         self.address = address
 
 
 class LatLonMarker(Marker):
 
-    def __init__(self, lat, lon, size=None, color=None, label=None):
-        Marker.__init__(self, size, color, label)
+    def __init__(self, lat, lon, size=None, color=None, label=None, icon_url=None):
+        Marker.__init__(self, size, color, label, icon_url)
         self.latitude = lat
         self.longitude = lon
 
@@ -273,18 +283,18 @@ class DecoratedMap(Map):
         ret = []
         # build list of unique styles
         for marker in self.markers:
-            styles.add((marker.size, marker.color, marker.label))
+            styles.add((marker.size, marker.color, marker.label, marker.icon_url))
         # setup styles/location dict
         for style in styles:
             data[style] = []
         # populate styles/location dict
         for marker in self.markers:
             if isinstance(marker, AddressMarker):
-                data[(marker.size, marker.color, marker.label)
+                data[(marker.size, marker.color, marker.label, marker.icon_url)
                      ].append(quote(marker.address))
             if isinstance(marker, LatLonMarker):
                 location = "%s,%s" % (marker.latitude, marker.longitude)
-                data[(marker.size, marker.color, marker.label)
+                data[(marker.size, marker.color, marker.label, marker.icon_url)
                      ].append(location)
         # build markers entries for URL
         for style in data:
@@ -297,6 +307,8 @@ class DecoratedMap(Map):
                 parts.append("color:%s" % style[1])
             if style[2]:
                 parts.append("label:%s" % style[2])
+            if style[3]:
+                parts.append("icon:%s" % style[3])
             for location in locations:
                 parts.append(location)
             ret.append("|".join(parts))
