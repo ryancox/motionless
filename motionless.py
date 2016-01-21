@@ -1,7 +1,6 @@
 import re
 
-from six.moves import urllib
-from six.moves.urllib.parse import quote
+from six.moves.urllib.parse import quote, urlparse
 
 """
     motionless is a library that takes the pain out of generating Google Static Map URLs.
@@ -75,7 +74,7 @@ class Marker(object):
         self.icon_url = quote(icon_url)
 
     def check_icon_url(self, url):
-        result = urllib.parse.urlparse(url)
+        result = urlparse(url)
         return result.scheme and result.netloc
 
 
@@ -103,7 +102,7 @@ class Map(object):
     ZOOM_RANGE = list(range(1, 21))
     SCALE_RANGE = list(range(1,5))
 
-    def __init__(self, size_x, size_y, maptype, zoom=None, scale=1, key=None, language='en'):
+    def __init__(self, size_x, size_y, maptype, zoom=None, scale=1, key=None, language='en', style=None):
         self.base_url = 'https://maps.google.com/maps/api/staticmap?'
         self.size_x = size_x
         self.size_y = size_y
@@ -114,6 +113,7 @@ class Map(object):
         self.scale = scale
         self.key = key
         self.language = language
+        self.style = style
 
     def __str__(self):
         return self.generate_url()
@@ -171,9 +171,9 @@ class Map(object):
 class CenterMap(Map):
 
     def __init__(self, address=None, lat=None, lon=None, zoom=17, size_x=400,
-                 size_y=400, maptype='roadmap', scale=1, key=None):
+                 size_y=400, maptype='roadmap', scale=1, key=None, style=None):
         Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype,
-                     zoom=zoom, scale=scale, key=key)
+                     zoom=zoom, scale=scale, key=key, style=style)
         if address:
             self.center = quote(address)
         elif lat and lon:
@@ -205,8 +205,8 @@ class CenterMap(Map):
 
 class VisibleMap(Map):
 
-    def __init__(self, size_x=400, size_y=400, maptype='roadmap', scale=1, key=None):
-        Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype, scale=scale, key=key)
+    def __init__(self, size_x=400, size_y=400, maptype='roadmap', scale=1, key=None, style=None):
+        Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype, scale=scale, key=key, style=style)
         self.locations = []
 
     def add_address(self, address):
@@ -237,9 +237,9 @@ class DecoratedMap(Map):
 
     def __init__(self, lat=None, lon=None, zoom=None, size_x=400, size_y=400,
                  maptype='roadmap', scale=1, region=False, fillcolor='green',
-                 pathweight=None, pathcolor=None, key=None):
+                 pathweight=None, pathcolor=None, key=None, style=None):
         Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype,
-                     zoom=zoom, scale=scale, key=key)
+                     zoom=zoom, scale=scale, key=key, style=style)
         self.markers = []
         self.fillcolor = fillcolor
         self.pathweight = pathweight
@@ -380,6 +380,15 @@ class DecoratedMap(Map):
                 url = "%senc:%s" % (url, quote(self._polyencode()))
             else:
                 url = "%s%s" % (url, "|".join(self.path))
+
+        if self.style:
+            for style_map in self.style:
+                url = "%s&style=feature:%s|element:%s|" % (
+                    url,
+                    (style_map['feature'] if 'feature' in style_map else 'all'),
+                    (style_map['element'] if 'element' in style_map else 'all'))
+                for prop, rule in style_map['rules'].items():
+                    url = "%s%s:%s|" % (url, prop, str(rule).replace('#', '0x'))
 
         self._check_url(url)
 
