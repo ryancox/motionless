@@ -71,7 +71,7 @@ class Marker(object):
         self.size = size
         self.color = color
         self.label = label
-        self.icon_url = quote(icon_url)
+        self.icon_url = quote(icon_url) if icon_url else None
 
     def check_icon_url(self, url):
         result = urlparse(url)
@@ -100,7 +100,7 @@ class Map(object):
     MAX_X = 640
     MAX_Y = 640
     ZOOM_RANGE = list(range(1, 21))
-    SCALE_RANGE = list(range(1,5))
+    SCALE_RANGE = list(range(1, 5))
 
     def __init__(self, size_x, size_y, maptype, zoom=None, scale=1, key=None, language='en', style=None):
         self.base_url = 'https://maps.google.com/maps/api/staticmap?'

@@ -57,7 +57,7 @@ DecoratedMaps contain markers and/or paths. They are automatically sized and zoo
     road_styles = [{
         'feature': 'road.highway',
         'element': 'geomoetry',
-        'rules' {
+        'rules': {
             'visibility': 'simplified',
             'color': '#c280e9'
         }
