@@ -1,8 +1,5 @@
 import math
-try:
-    from cStringIO import StringIO
-except:
-    from StringIO import StringIO
+from six import StringIO
 
 class GPolyEncoder(object):
     def __init__(self, num_levels=18, zoom_factor=2, threshold=0.00001, force_endpoints=True):

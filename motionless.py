@@ -1,5 +1,6 @@
-from urllib import quote
 import re
+
+from six.moves.urllib.parse import quote, urlparse
 
 """
     motionless is a library that takes the pain out of generating Google Static Map URLs.
@@ -47,39 +48,47 @@ class Color(object):
     def is_valid_color(color):
         return Color.pat.match(color) or color in Color.COLORS
 
-
 class Marker(object):
     SIZES = ['tiny', 'mid', 'small']
     LABELS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-    def __init__(self, size, color, label):
+    def __init__(self, size, color, label, icon_url):
         if size and size not in Marker.SIZES:
             raise ValueError(
                 "[%s] is not a valid marker size. Valid sizes include %s" %
                 (size, Marker.SIZES))
-        if label and (len(label) <> 1 or not label in Marker.LABELS):
+        if label and (len(label) != 1 or not label in Marker.LABELS):
             raise ValueError(
                 "[%s] is not a valid label. Valid labels are a single character 'A'..'Z' or '0'..'9'" % label)
         if color and color not in Color.COLORS:
             raise ValueError(
                 "[%s] is not a valid color. Valid colors include %s" %
                 (color, Color.COLORS))
+        if icon_url and not self.check_icon_url(icon_url):
+            raise ValueError(
+                "[%s] is not a valid url." % icon_url
+            )
         self.size = size
         self.color = color
         self.label = label
+        self.icon_url = quote(icon_url) if icon_url else None
+
+    def check_icon_url(self, url):
+        result = urlparse(url)
+        return result.scheme and result.netloc
 
 
 class AddressMarker(Marker):
 
-    def __init__(self, address, size=None, color=None, label=None):
-        Marker.__init__(self, size, color, label)
+    def __init__(self, address, size=None, color=None, label=None, icon_url=None):
+        Marker.__init__(self, size, color, label, icon_url)
         self.address = address
 
 
 class LatLonMarker(Marker):
 
-    def __init__(self, lat, lon, size=None, color=None, label=None):
-        Marker.__init__(self, size, color, label)
+    def __init__(self, lat, lon, size=None, color=None, label=None, icon_url=None):
+        Marker.__init__(self, size, color, label, icon_url)
         self.latitude = lat
         self.longitude = lon
 
@@ -90,10 +99,10 @@ class Map(object):
     FORMATS = ['png', 'png8', 'png32', 'gif', 'jpg', 'jpg-baseline']
     MAX_X = 640
     MAX_Y = 640
-    ZOOM_RANGE = range(1, 21)
-    SCALE_RANGE = range(1,5)
+    ZOOM_RANGE = list(range(1, 21))
+    SCALE_RANGE = list(range(1, 5))
 
-    def __init__(self, size_x, size_y, maptype, zoom=None, scale=1, key=None, language='en'):
+    def __init__(self, size_x, size_y, maptype, zoom=None, scale=1, key=None, language='en', style=None):
         self.base_url = 'https://maps.google.com/maps/api/staticmap?'
         self.size_x = size_x
         self.size_y = size_y
@@ -104,6 +113,7 @@ class Map(object):
         self.scale = scale
         self.key = key
         self.language = language
+        self.style = style
 
     def __str__(self):
         return self.generate_url()
@@ -161,9 +171,9 @@ class Map(object):
 class CenterMap(Map):
 
     def __init__(self, address=None, lat=None, lon=None, zoom=17, size_x=400,
-                 size_y=400, maptype='roadmap', scale=1, key=None):
+                 size_y=400, maptype='roadmap', scale=1, key=None, style=None):
         Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype,
-                     zoom=zoom, scale=scale, key=key)
+                     zoom=zoom, scale=scale, key=key, style=style)
         if address:
             self.center = quote(address)
         elif lat and lon:
@@ -195,8 +205,8 @@ class CenterMap(Map):
 
 class VisibleMap(Map):
 
-    def __init__(self, size_x=400, size_y=400, maptype='roadmap', scale=1, key=None):
-        Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype, scale=scale, key=key)
+    def __init__(self, size_x=400, size_y=400, maptype='roadmap', scale=1, key=None, style=None):
+        Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype, scale=scale, key=key, style=style)
         self.locations = []
 
     def add_address(self, address):
@@ -227,9 +237,9 @@ class DecoratedMap(Map):
 
     def __init__(self, lat=None, lon=None, zoom=None, size_x=400, size_y=400,
                  maptype='roadmap', scale=1, region=False, fillcolor='green',
-                 pathweight=None, pathcolor=None, key=None):
+                 pathweight=None, pathcolor=None, key=None, style=None):
         Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype,
-                     zoom=zoom, scale=scale, key=key)
+                     zoom=zoom, scale=scale, key=key, style=style)
         self.markers = []
         self.fillcolor = fillcolor
         self.pathweight = pathweight
@@ -249,7 +259,7 @@ class DecoratedMap(Map):
             raise ValueError(
                 "At least two path elements required if region is enabled")
 
-        if self.region and self.path[0] <> self.path[-1]:
+        if self.region and self.path[0] != self.path[-1]:
             raise ValueError(
                 "If region enabled, first and last path entry must be identical")
 
@@ -273,18 +283,18 @@ class DecoratedMap(Map):
         ret = []
         # build list of unique styles
         for marker in self.markers:
-            styles.add((marker.size, marker.color, marker.label))
+            styles.add((marker.size, marker.color, marker.label, marker.icon_url))
         # setup styles/location dict
         for style in styles:
             data[style] = []
         # populate styles/location dict
         for marker in self.markers:
             if isinstance(marker, AddressMarker):
-                data[(marker.size, marker.color, marker.label)
+                data[(marker.size, marker.color, marker.label, marker.icon_url)
                      ].append(quote(marker.address))
             if isinstance(marker, LatLonMarker):
                 location = "%s,%s" % (marker.latitude, marker.longitude)
-                data[(marker.size, marker.color, marker.label)
+                data[(marker.size, marker.color, marker.label, marker.icon_url)
                      ].append(location)
         # build markers entries for URL
         for style in data:
@@ -297,6 +307,8 @@ class DecoratedMap(Map):
                 parts.append("color:%s" % style[1])
             if style[2]:
                 parts.append("label:%s" % style[2])
+            if style[3]:
+                parts.append("icon:%s" % style[3])
             for location in locations:
                 parts.append(location)
             ret.append("|".join(parts))
@@ -368,6 +380,15 @@ class DecoratedMap(Map):
                 url = "%senc:%s" % (url, quote(self._polyencode()))
             else:
                 url = "%s%s" % (url, "|".join(self.path))
+
+        if self.style:
+            for style_map in self.style:
+                url = "%s&style=feature:%s|element:%s|" % (
+                    url,
+                    (style_map['feature'] if 'feature' in style_map else 'all'),
+                    (style_map['element'] if 'element' in style_map else 'all'))
+                for prop, rule in style_map['rules'].items():
+                    url = "%s%s:%s|" % (url, prop, str(rule).replace('#', '0x'))
 
         self._check_url(url)
 

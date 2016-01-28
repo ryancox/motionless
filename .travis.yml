@@ -9,13 +9,13 @@ python:
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
-  # - pip install -r requirements.txt
   - pip install coveralls
+  - pip install nose
+  - pip install -e .
 
 # command to run tests, e.g. python setup.py test
-script: 
-  - python setup.py test
-  - coverage run --source=motionless setup.py test
-after_success: coveralls
+script:
+  - nosetests --with-coverage --cover-package motionless
 
-sudo: false
+after_success:
+  - coveralls
