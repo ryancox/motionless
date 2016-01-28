@@ -1,16 +1,15 @@
 from motionless import AddressMarker, LatLonMarker,DecoratedMap, CenterMap, VisibleMap
 import xml.sax
-
-import urllib2
+from six.moves.urllib import request
 
 class QuakeHandler(xml.sax.handler.ContentHandler):
     
     def __init__(self,gmap):
         self.content = []
         self.gmap = gmap
-        self.qname_point = (u'http://www.georss.org/georss',u'point')
-        self.qname_title = (u'http://www.w3.org/2005/Atom', u'title')
-        self.qname_entry = (u'http://www.w3.org/2005/Atom', u'entry')
+        self.qname_point = ('http://www.georss.org/georss','point')
+        self.qname_title = ('http://www.w3.org/2005/Atom', 'title')
+        self.qname_entry = ('http://www.w3.org/2005/Atom', 'entry')
 
 
     def startElementNS(self, qname, name, attrs):
@@ -50,7 +49,7 @@ parser = xml.sax.make_parser()
 parser.setContentHandler(QuakeHandler(quake))
 parser.setFeature(xml.sax.handler.feature_namespaces, 1)
 
-opener = urllib2.urlopen( 'http://earthquake.usgs.gov/earthquakes/catalogs/1day-M2.5.xml')
+opener = request.urlopen( 'http://earthquake.usgs.gov/earthquakes/catalogs/1day-M2.5.xml')
 parser.feed(opener.read())
 
 htmlPage = """
@@ -69,4 +68,4 @@ htmlPage = """
 html = open("earthquakes.html","w")
 html.write(htmlPage)
 html.close()
-print "earthquakes.html file created"
+print("earthquakes.html file created")

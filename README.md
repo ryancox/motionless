@@ -6,7 +6,7 @@ motionless
 [![Coverage Status](https://coveralls.io/repos/ryancox/motionless/badge.svg?branch=master&service=github)](https://coveralls.io/github/ryancox/motionless?branch=master)
 
 
-motionless is a Python library that takes the pain out of generating [Google Static Map](http://code.google.com/apis/maps/documentation/staticmaps/) URLs. Three map types are supported. Each is illustrated below. For fully worked code see the examples directory for code that parses and visualizes both GeoRSS feeds and GPX files. 
+motionless is a Python library that takes the pain out of generating [Google Static Map](http://code.google.com/apis/maps/documentation/staticmaps/) URLs. Three map types are supported. Each is illustrated below. For fully worked code see the examples directory for code that parses and visualizes both GeoRSS feeds and GPX files.
 
 Code is licensed under Apache 2.0
 
@@ -14,7 +14,7 @@ For DecoratedMaps, paths are encoded if [gpolyencode](http://code.google.com/p/p
 
 If you have run into bugs, open a github issue. If you have questions, feel free to email me at ryan.a.cox@gmail.com
 
--ryan 
+-ryan
 @ryancox
 [www.asciiarmor.com](http://www.asciiarmor.com)
 
@@ -57,17 +57,31 @@ print vmap.generate_url()
 DecoratedMap
 ============
 
-DecoratedMaps contain markers and/or paths. They are automatically sized and zoomed to make the specified elements visible.
+DecoratedMaps contain markers and/or paths. They are automatically sized and zoomed to make the specified elements visible. You can add a list of [style definitions](https://developers.google.com/maps/documentation/static-maps/intro#StyledMaps) to add custom styling to your map.
 
 ```py
 from motionless import DecoratedMap
-dmap = DecoratedMap()
+road_styles = [{
+    'feature': 'road.highway',
+    'element': 'geomoetry',
+    'rules': {
+        'visibility': 'simplified',
+        'color': '#c280e9'
+    }
+}, {
+    'feature': 'transit.line',
+    'rules': {
+        'visibility': 'simplified',
+        'color': '#bababa'
+    }
+}]
+dmap = DecoratedMap(style=road_styles)
 dmap.add_marker(AddressMarker('1 Infinite Loop, Cupertino, CA',label='A'))
 dmap.add_marker(AddressMarker('1600 Amphitheatre Parkway Mountain View, CA',label='G'))
 print dmap.generate_url()
 ```
 
-![Apple and Google](http://maps.google.com/maps/api/staticmap?maptype=roadmap&format=png&size=400x400&sensor=false&markers=|label:G|1600%20Amphitheatre%20Parkway%20Mountain%20View%2C%20CA&markers=|label:A|1%20Infinite%20Loop%2C%20Cupertino%2C%20CA)
+![Apple and Google](http://maps.google.com/maps/api/staticmap?maptype=roadmap&format=png&size=400x400&sensor=false&markers=|label:G|1600%20Amphitheatre%20Parkway%20Mountain%20View%2C%20CA&markers=|label:A|1%20Infinite%20Loop%2C%20Cupertino%2C%20CA&style=feature:road.highway%7Celement:geometry%7Cvisibility:simplified%7Ccolor:0xc280e9&style=feature:transit.line%7Cvisibility:simplified%7Ccolor:0xbababa)
 
 Produced from parsing GPX file. See [examples/munich.py](http://github.com/ryancox/motionless/blob/master/examples/munich.py)
 
