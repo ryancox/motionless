@@ -22,8 +22,8 @@ install:
 script:
   - nosetests --with-coverage --cover-package motionless
   - cd examples && python munich.py
-  - python examples/demo.py
-  - python examples/earthquakes.py
+  - cd examples && python demo.py
+  - cd examples && python earthquakes.py
 
 after_success:
   - coveralls
