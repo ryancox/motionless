@@ -1,3 +1,5 @@
+"""Get the current USGS earthquake feed and add it to a DecoratedMap."""
+from __future__ import print_function
 from motionless import LatLonMarker, DecoratedMap
 from six.moves.urllib import request
 try:
@@ -12,10 +14,10 @@ opener = request.urlopen('http://earthquake.usgs.gov/earthquakes/feed/v1.0'
                          '/summary/2.5_day.geojson')
 
 # Parse it
-gjs = geojson.loads(opener.readall().decode('utf-8'))
+gjs = geojson.loads(opener.read().decode('utf-8'))
 
 # Prepare a map and add the points
-gmap = DecoratedMap(size_x=640,size_y=440)
+gmap = DecoratedMap(size_x=640, size_y=440)
 for feat in gjs.features:
     magnitude = feat['properties']['mag']
     lon, lat, _ = feat['geometry']["coordinates"]
@@ -44,6 +46,6 @@ magnitudes. Details can be found on the
 </html>
 """ % gmap.generate_url()
 
-with open("earthquakes.html","w")as html:
+with open("earthquakes.html", "w")as html:
     html.write(htmlPage)
 print("earthquakes.html file created")

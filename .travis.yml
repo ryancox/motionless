@@ -10,7 +10,6 @@ python:
   - "pypy"
 
 install:
-  - pip install gpolyencode
   - pip install geojson
   - pip install coveralls
   - pip install nose
