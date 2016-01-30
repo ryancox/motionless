@@ -8,22 +8,17 @@ python:
   - "3.4"
   - "3.5"
   - "pypy"
-  - "nightly"
 
 install:
   - pip install gpolyencode
   - pip install geojson
   - pip install coveralls
   - pip install nose
-  - pip install six
   - pip install -e .
 
 # command to run tests, e.g. python setup.py test
 script:
   - nosetests --with-coverage --cover-package motionless
-  - cd examples && python munich.py
-  - cd examples && python demo.py
-  - cd examples && python earthquakes.py
 
 after_success:
   - coveralls
