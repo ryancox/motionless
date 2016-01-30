@@ -12,11 +12,6 @@ Code is licensed under Apache 2.0
 
 For DecoratedMaps, paths are encoded if [gpolyencode](http://code.google.com/p/py-gpolyencode/) is present. This is useful for keeping URLs with in the 2048 character limit imposed by the service.
 
-If you have run into bugs, open a github issue. If you have questions, feel free to email me at ryan.a.cox@gmail.com
-
--ryan
-@ryancox
-[www.asciiarmor.com](http://www.asciiarmor.com)
 
 CenterMap
 =========
