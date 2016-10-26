@@ -8,7 +8,7 @@ from motionless import CenterMap, DecoratedMap, LatLonMarker
 from motionless import VisibleMap, AddressMarker
 
 
-class Test(unittest.TestCase):
+class TestMotionless(unittest.TestCase):
     """
     Unit tests for motionless
     """
@@ -89,17 +89,17 @@ class Test(unittest.TestCase):
         import sys
         test_dir = os.path.dirname(os.path.abspath(__file__))
         ex_dir = os.path.join(test_dir, os.pardir, 'examples')
-
+        ex_dir = os.path.abspath(ex_dir)
         if not os.path.exists(ex_dir):
             # This can happen, it doesn't really matter
             return
 
         sys.path.append(ex_dir)
         import demo
-        import earthquakes
+        import munich
         try:
-            import gpolyencode
-            import munich
+            import geojson
+            import earthquakes
         except ImportError:
             pass
 
