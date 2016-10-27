@@ -6,8 +6,7 @@ try:
     import geojson
 except ImportError:
     print('This example requires the geojson package')
-    import sys
-    sys.exit()
+    quit()
 
 # Get the geojson feed from USGS
 opener = request.urlopen('http://earthquake.usgs.gov/earthquakes/feed/v1.0'

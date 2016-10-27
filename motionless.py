@@ -1,6 +1,6 @@
 import re
-
 from six.moves.urllib.parse import quote, urlparse
+from gpolyencode import GPolyEncoder
 
 """
     motionless is a library that takes the pain out of generating Google Static Map URLs.
@@ -314,16 +314,8 @@ class DecoratedMap(Map):
             ret.append("|".join(parts))
         return "&".join(ret)
 
-    def _can_polyencode(self):
-        try:
-            import gpolyencode
-        except:
-            return False
-        return not self.contains_addresses
-
     def _polyencode(self):
-        import gpolyencode
-        encoder = gpolyencode.GPolyEncoder()
+        encoder = GPolyEncoder()
         points = []
         for point in self.path:
             tokens = point.split(',')
@@ -376,10 +368,7 @@ class DecoratedMap(Map):
             if self.region:
                 url = "%sfillcolor:%s|" % (url, self.fillcolor)
 
-            if self._can_polyencode():
-                url = "%senc:%s" % (url, quote(self._polyencode()))
-            else:
-                url = "%s%s" % (url, "|".join(self.path))
+            url = "%senc:%s" % (url, quote(self._polyencode()))
 
         if self.style:
             for style_map in self.style:
