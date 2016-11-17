@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 __author__ = 'Ryan Cox <ryan.a.cox@gmail.com>'
-__version__ = '1.3'
+__version__ = '1.3.1'
 
 # Distutils version
 METADATA = dict(
