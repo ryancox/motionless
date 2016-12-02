@@ -94,7 +94,7 @@ class LatLonMarker(Marker):
 
 
 class Map(object):
-    MAX_URL_LEN = 2048
+    MAX_URL_LEN = 8192  # https://developers.google.com/maps/documentation/static-maps/intro#url-size-restriction
     MAPTYPES = ['roadmap', 'satellite', 'hybrid', 'terrain']
     FORMATS = ['png', 'png8', 'png32', 'gif', 'jpg', 'jpg-baseline']
     MAX_X = 640
