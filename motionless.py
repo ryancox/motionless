@@ -36,7 +36,7 @@ from gpolyencode import GPolyEncoder
 
 
 __author__ = "Ryan Cox <ryan.a.cox@gmail.com>"
-__version__ = "1.0"
+__version__ = "1.3.1"
 
 
 class Color(object):
