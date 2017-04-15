@@ -248,9 +248,12 @@ class DecoratedMap(Map):
         self.pathweight = pathweight
         self.pathcolor = pathcolor
         self.region = region
-        self.simplify_threshold = simplify_threshold_meters / DecoratedMap.METERS_PER_DEGREE
         self.path = []
         self.contains_addresses = False
+        if simplify_threshold_meters is None:
+            self.simplify_threshold = 0
+        else:
+            self.simplify_threshold = simplify_threshold_meters / DecoratedMap.METERS_PER_DEGREE
         if lat and lon:
             self.center = "%s,%s" % (lat, lon)
         else:
