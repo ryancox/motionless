@@ -235,9 +235,12 @@ class VisibleMap(Map):
 
 class DecoratedMap(Map):
 
+    METERS_PER_DEGREE = 111111.0
+
     def __init__(self, lat=None, lon=None, zoom=None, size_x=400, size_y=400,
                  maptype='roadmap', scale=1, region=False, fillcolor='green',
-                 pathweight=None, pathcolor=None, key=None, style=None):
+                 pathweight=None, pathcolor=None, key=None, style=None,
+                 simplify_threshold_meters=1.11111):
         Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype,
                      zoom=zoom, scale=scale, key=key, style=style)
         self.markers = []
@@ -247,6 +250,10 @@ class DecoratedMap(Map):
         self.region = region
         self.path = []
         self.contains_addresses = False
+        if simplify_threshold_meters is None:
+            self.simplify_threshold = 0
+        else:
+            self.simplify_threshold = simplify_threshold_meters / DecoratedMap.METERS_PER_DEGREE
         if lat and lon:
             self.center = "%s,%s" % (lat, lon)
         else:
@@ -315,7 +322,7 @@ class DecoratedMap(Map):
         return "&".join(ret)
 
     def _polyencode(self):
-        encoder = GPolyEncoder()
+        encoder = GPolyEncoder(threshold=self.simplify_threshold)
         points = []
         for point in self.path:
             tokens = point.split(',')
