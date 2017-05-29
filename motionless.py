@@ -60,7 +60,7 @@ class Marker(object):
         if label and (len(label) != 1 or not label in Marker.LABELS):
             raise ValueError(
                 "[%s] is not a valid label. Valid labels are a single character 'A'..'Z' or '0'..'9'" % label)
-        if color and color not in Color.COLORS:
+        if color and not Color.is_valid_color(color):
             raise ValueError(
                 "[%s] is not a valid color. Valid colors include %s" %
                 (color, Color.COLORS))
