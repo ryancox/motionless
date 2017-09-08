@@ -171,9 +171,9 @@ class Map(object):
 class CenterMap(Map):
 
     def __init__(self, address=None, lat=None, lon=None, zoom=17, size_x=400,
-                 size_y=400, maptype='roadmap', scale=1, key=None, style=None):
+                 size_y=400, maptype='roadmap', scale=1, key=None, style=None, language='en'):
         Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype,
-                     zoom=zoom, scale=scale, key=key, style=style)
+                     zoom=zoom, scale=scale, key=key, style=style, language=language)
         if address:
             self.center = quote(address)
         elif lat and lon:
@@ -205,8 +205,8 @@ class CenterMap(Map):
 
 class VisibleMap(Map):
 
-    def __init__(self, size_x=400, size_y=400, maptype='roadmap', scale=1, key=None, style=None):
-        Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype, scale=scale, key=key, style=style)
+    def __init__(self, size_x=400, size_y=400, maptype='roadmap', scale=1, key=None, style=None, language='en'):
+        Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype, scale=scale, key=key, style=style, language=language)
         self.locations = []
 
     def add_address(self, address):
@@ -240,9 +240,9 @@ class DecoratedMap(Map):
     def __init__(self, lat=None, lon=None, zoom=None, size_x=400, size_y=400,
                  maptype='roadmap', scale=1, region=False, fillcolor='green',
                  pathweight=None, pathcolor=None, key=None, style=None,
-                 simplify_threshold_meters=1.11111):
+                 simplify_threshold_meters=1.11111, language='en'):
         Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype,
-                     zoom=zoom, scale=scale, key=key, style=style)
+                     zoom=zoom, scale=scale, key=key, style=style, language=language)
         self.markers = []
         self.fillcolor = fillcolor
         self.pathweight = pathweight
