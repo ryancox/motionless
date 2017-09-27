@@ -343,8 +343,7 @@ class DecoratedMap(Map):
 
     def generate_url(self):
         self.check_parameters()
-        url = "%s%smaptype=%s&format=%s&scale=%s&size=%sx%s&sensor=%s&language=%s" % (
-            self.base_url,
+        query = "%smaptype=%s&format=%s&scale=%s&size=%sx%s&sensor=%s&language=%s" % (
             self._get_key(),
             self.maptype,
             self.format,
@@ -355,36 +354,38 @@ class DecoratedMap(Map):
             self.language)
 
         if self.center:
-            url = "%s&center=%s" % (url, self.center)
+            query = "%s&center=%s" % (query, self.center)
 
         if self.zoom:
-            url = "%s&zoom=%s" % (url, self.zoom)
+            query = "%s&zoom=%s" % (query, self.zoom)
 
         if len(self.markers) > 0:
-            url = "%s&%s" % (url, self._generate_markers())
+            query = "%s&%s" % (query, self._generate_markers())
 
         if len(self.path) > 0:
-            url = "%s&path=" % url
+            query = "%s&path=" % query
 
             if self.pathcolor:
-                url = "%scolor:%s|" % (url, self.pathcolor)
+                query = "%scolor:%s|" % (query, self.pathcolor)
 
             if self.pathweight:
-                url = "%sweight:%s|" % (url, self.pathweight)
+                query = "%sweight:%s|" % (query, self.pathweight)
 
             if self.region:
-                url = "%sfillcolor:%s|" % (url, self.fillcolor)
+                query = "%sfillcolor:%s|" % (query, self.fillcolor)
 
-            url = "%senc:%s" % (url, quote(self._polyencode()))
+            query = "%senc:%s" % (query, quote(self._polyencode()))
 
         if self.style:
             for style_map in self.style:
-                url = "%s&style=feature:%s|element:%s|" % (
-                    url,
+                query = "%s&style=feature:%s|element:%s|" % (
+                    query,
                     (style_map['feature'] if 'feature' in style_map else 'all'),
                     (style_map['element'] if 'element' in style_map else 'all'))
                 for prop, rule in style_map['rules'].items():
-                    url = "%s%s:%s|" % (url, prop, str(rule).replace('#', '0x'))
+                    query = "%s%s:%s|" % (query, prop, str(rule).replace('#', '0x'))
+
+        url = self.base_url + quote(query, safe='/&=')
 
         self._check_url(url)
 

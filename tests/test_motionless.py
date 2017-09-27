@@ -78,8 +78,9 @@ class TestMotionless(unittest.TestCase):
             decorated_map.generate_url(),
             'https://maps.googleapis.com/maps/api/staticmap?maptype=roadmap&'
             'format=png&scale=1&size=400x400&sensor=false&language=en&'
-            'markers=|label:G|37.422782,-122.085099&'
-            'style=feature:road.highway|element:geomoetry|color:0xc280e9|'
+            'markers=%7Clabel%3AG%7C37.422782%2C-122.085099&'
+            'style=feature%3Aroad.highway%7Celement%3Ageomoetry%7C'
+            'color%3A0xc280e9%7C'
         )
 
     def test_demos(self):
