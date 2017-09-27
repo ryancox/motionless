@@ -24,8 +24,8 @@ class TestMotionless(unittest.TestCase):
 
         self.assertEqual(
             cmap_sat.generate_url(),
-            'https://maps.google.com/maps/api/staticmap?maptype=satellite&f'
-            'ormat=png&scale=1&center=48.858278,2.294489&zoom=17&'
+            'https://maps.googleapis.com/maps/api/staticmap?maptype=satellite&'
+            'format=png&scale=1&center=48.858278,2.294489&zoom=17&'
             'size=400x400&sensor=false&language=en')
 
     def test_visible(self):
@@ -36,7 +36,7 @@ class TestMotionless(unittest.TestCase):
 
         self.assertEqual(
             vmap.generate_url(),
-            'https://maps.google.com/maps/api/staticmap?maptype=terrain&'
+            'https://maps.googleapis.com/maps/api/staticmap?maptype=terrain&'
             'format=png&scale=1&size=400x400&sensor=false&'
             'visible=Sugarbowl%2C%20Truckee%2C%20CA|Tahoe%20City%2C%20CA&'
             'language=en')
@@ -47,7 +47,7 @@ class TestMotionless(unittest.TestCase):
 
         self.assertEqual(
             center_map.generate_url(),
-            'https://maps.google.com/maps/api/staticmap?maptype=roadmap&'
+            'https://maps.googleapis.com/maps/api/staticmap?maptype=roadmap&'
             'format=png&scale=1&center=151%20third%20st%2C%20san%20francisco'
             '%2C%20ca&zoom=17&size=400x400&sensor=false&language=en')
 
@@ -76,7 +76,7 @@ class TestMotionless(unittest.TestCase):
                                               label='G'))
         self.assertEqual(
             decorated_map.generate_url(),
-            'https://maps.google.com/maps/api/staticmap?maptype=roadmap&'
+            'https://maps.googleapis.com/maps/api/staticmap?maptype=roadmap&'
             'format=png&scale=1&size=400x400&sensor=false&language=en&'
             'markers=|label:G|37.422782,-122.085099&'
             'style=feature:road.highway|element:geomoetry|color:0xc280e9|'
