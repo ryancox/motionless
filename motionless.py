@@ -97,7 +97,7 @@ class Map(object):
     MAX_URL_LEN = 8192  # https://developers.google.com/maps/documentation/static-maps/intro#url-size-restriction
 
     def __init__(self, size_x, size_y, maptype, zoom=None, scale=1, key=None, language='en', style=None):
-        self.base_url = 'https://maps.google.com/maps/api/staticmap?'
+        self.base_url = 'https://maps.googleapis.com/maps/api/staticmap?'
         self.size_x = size_x
         self.size_y = size_y
         self.sensor = False
