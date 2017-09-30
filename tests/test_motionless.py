@@ -24,8 +24,8 @@ class TestMotionless(unittest.TestCase):
 
         self.assertEqual(
             cmap_sat.generate_url(),
-            'https://maps.googleapis.com/maps/api/staticmap?maptype=satellite&f'
-            'ormat=png&scale=1&center=48.858278%2C2.294489&zoom=17&'
+            'https://maps.googleapis.com/maps/api/staticmap?maptype=satellite&'
+            'format=png&scale=1&center=48.858278%2C2.294489&zoom=17&'
             'size=400x400&sensor=false&language=en')
 
     def test_visible(self):

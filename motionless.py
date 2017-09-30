@@ -36,7 +36,7 @@ from gpolyencode import GPolyEncoder
 
 
 __author__ = "Ryan Cox <ryan.a.cox@gmail.com>"
-__version__ = "1.3.2"
+__version__ = "1.3.3"
 
 
 class Color(object):
@@ -95,12 +95,6 @@ class LatLonMarker(Marker):
 
 class Map(object):
     MAX_URL_LEN = 8192  # https://developers.google.com/maps/documentation/static-maps/intro#url-size-restriction
-    MAPTYPES = ['roadmap', 'satellite', 'hybrid', 'terrain']
-    FORMATS = ['png', 'png8', 'png32', 'gif', 'jpg', 'jpg-baseline']
-    MAX_X = 640
-    MAX_Y = 640
-    ZOOM_RANGE = list(range(1, 21))
-    SCALE_RANGE = list(range(1, 5))
 
     def __init__(self, size_x, size_y, maptype, zoom=None, scale=1, key=None, language='en', style=None):
         self.base_url = 'https://maps.googleapis.com/maps/api/staticmap?'
@@ -117,37 +111,6 @@ class Map(object):
 
     def __str__(self):
         return self.generate_url()
-
-    def check_parameters(self):
-        if self.format not in Map.FORMATS:
-            raise ValueError(
-                "[%s] is not a valid file format. Valid formats include %s" %
-                (self.format, Map.FORMATS))
-
-        if self.maptype not in Map.MAPTYPES:
-            raise ValueError(
-                "[%s] is not a valid map type. Valid types include %s" %
-                (self.maptype, Map.MAPTYPES))
-
-        if self.size_x > Map.MAX_X or self.size_x < 1:
-            raise ValueError(
-                "[%s] is not a valid x-dimension. Must be between 1 and %s" %
-                (self.size_x, Map.MAX_X))
-
-        if self.size_y > Map.MAX_Y or self.size_y < 1:
-            raise ValueError(
-                "[%s] is not a valid y-dimension. Must be between 1 and %s" %
-                (self.size_y, Map.MAX_Y))
-
-        if self.zoom is not None and self.zoom not in Map.ZOOM_RANGE:
-            raise ValueError(
-                "[%s] is not a zoom setting. Must be between %s and %s" %
-                (self.zoom, min(Map.ZOOM_RANGE), max(Map.ZOOM_RANGE)))
-
-        if self.scale is not None and self.scale not in Map.SCALE_RANGE:
-            raise ValueError(
-                "[%s] is not a scale setting. Must be between %s and %s" %
-                (self.scale, min(Map.SCALE_RANGE), max(Map.SCALE_RANGE)))
 
     def _get_sensor(self):
         if self.sensor:
@@ -181,11 +144,7 @@ class CenterMap(Map):
         else:
             self.center = "1600 Amphitheatre Parkway Mountain View, CA"
 
-    def check_parameters(self):
-        super(CenterMap, self).check_parameters()
-
     def generate_url(self):
-        self.check_parameters()
         query = "%smaptype=%s&format=%s&scale=%s&center=%s&zoom=%s&size=%sx%s&sensor=%s&language=%s" % (
             self._get_key(),
             self.maptype,
@@ -217,7 +176,6 @@ class VisibleMap(Map):
         self.locations.append("%s,%s" % (quote(lat), quote(lon)))
 
     def generate_url(self):
-        self.check_parameters()
         query = "%smaptype=%s&format=%s&scale=%s&size=%sx%s&sensor=%s&visible=%s&language=%s" % (
             self._get_key(),
             self.maptype,
@@ -263,8 +221,6 @@ class DecoratedMap(Map):
             self.center = None
 
     def check_parameters(self):
-        super(DecoratedMap, self).check_parameters()
-
         if self.region and len(self.path) < 2:
             raise ValueError(
                 "At least two path elements required if region is enabled")
@@ -285,7 +241,6 @@ class DecoratedMap(Map):
             raise ValueError(
                 "%s is not a valid path color. Must be 24 or 32 bit value or one of %s" %
                 (self.pathcolor, Color.COLORS))
-
 
     def _generate_markers(self):
         styles = set()
