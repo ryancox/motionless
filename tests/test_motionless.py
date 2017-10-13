@@ -2,6 +2,7 @@
 Unit tests
 """
 from __future__ import print_function
+import base64
 import unittest
 
 from motionless import CenterMap, DecoratedMap, LatLonMarker
@@ -103,6 +104,129 @@ class TestMotionless(unittest.TestCase):
             import earthquakes
         except ImportError:
             pass
+
+    def test_api_key(self):
+        cmap = CenterMap(
+            lat=48.858278, lon=2.294489, maptype='satellite', key='abcdefghi'
+        )
+        url = cmap.generate_url()
+        self.assertEqual(
+            cmap.generate_url(),
+            'https://maps.googleapis.com/maps/api/staticmap?key=abcdefghi&maptype=satellite&'
+            'format=png&scale=1&center=48.858278%2C2.294489&zoom=17&'
+            'size=400x400&sensor=false&language=en')
+
+    def test_api_key_client_id_exclusive(self):
+        self.assertRaises(
+            ValueError,
+            lambda: CenterMap(
+                lat=48.858278, lon=2.294489, maptype='satellite',
+                key='abcdefghi', clientid='gme-exampleid'
+            )
+        )
+
+    def test_channel_requires_client_id(self):
+        self.assertRaises(
+            ValueError,
+            lambda: CenterMap(
+                lat=48.858278, lon=2.294489, maptype='satellite',
+                channel='somechannel'
+            )
+        )
+
+    def test_client_id_requires_secret(self):
+        self.assertRaises(
+            ValueError,
+            lambda: CenterMap(
+                lat=48.858278, lon=2.294489, maptype='satellite',
+                clientid='gme-exampleid'
+            )
+        )
+
+    def test_client_id_and_private_key(self):
+        cmap = CenterMap(
+            lat=48.858278, lon=2.294489, maptype='satellite',
+            clientid='gme-exampleid', secret='bbXgwW0k3631Bl2V5Z34gs9vYgf='
+        )
+        self.assertEqual(
+            cmap.generate_url(),
+            'https://maps.googleapis.com/maps/api/staticmap?client=gme-exampleid&maptype=satellite&'
+            'format=png&scale=1&center=48.858278%2C2.294489&zoom=17&'
+            'size=400x400&sensor=false&language=en&'
+            'signature=PsD-OrvyjeIflTpH1p6v5hElJrE=')
+
+        vmap = VisibleMap(maptype='terrain', clientid='gme-exampleid', secret='bbXgwW0k3631Bl2V5Z34gs9vYgf=')
+        vmap.add_address('Sugarbowl, Truckee, CA')
+        vmap.add_address('Tahoe City, CA')
+
+        self.assertEqual(
+            vmap.generate_url(),
+            'https://maps.googleapis.com/maps/api/staticmap?client=gme-exampleid&maptype=terrain&'
+            'format=png&scale=1&size=400x400&sensor=false&'
+            'visible=Sugarbowl%2C%20Truckee%2C%20CA%7CTahoe%20City%2C%20CA&'
+            'language=en&signature=0_hfvOReb4YQfq7sGyAs0dLEDEo=')
+
+        styles = [{
+            'feature': 'road.highway',
+            'element': 'geomoetry',
+            'rules': {
+                'color': '#c280e9'
+            }
+        }]
+        decorated_map = DecoratedMap(style=styles, clientid='gme-exampleid', secret='bbXgwW0k3631Bl2V5Z34gs9vYgf=')
+        decorated_map.add_marker(LatLonMarker('37.422782', '-122.085099',
+                                              label='G'))
+        self.assertEqual(
+            decorated_map.generate_url(),
+            'https://maps.googleapis.com/maps/api/staticmap?client=gme-exampleid&maptype=roadmap&'
+            'format=png&scale=1&size=400x400&sensor=false&language=en&'
+            'markers=%7Clabel%3AG%7C37.422782%2C-122.085099&'
+            'style=feature%3Aroad.highway%7Celement%3Ageomoetry%7C'
+            'color%3A0xc280e9%7C&signature=bkshPe4g0vRn1Wt3n-rUZvEEN4M='
+        )
+
+    def test_channel(self):
+        cmap = CenterMap(
+            lat=48.858278, lon=2.294489, maptype='satellite',
+            clientid='gme-exampleid', secret='bbXgwW0k3631Bl2V5Z34gs9vYgf=',
+            channel='somechannel'
+        )
+        self.assertEqual(
+            cmap.generate_url(),
+            'https://maps.googleapis.com/maps/api/staticmap?client=gme-exampleid&maptype=satellite&'
+            'format=png&scale=1&center=48.858278%2C2.294489&zoom=17&'
+            'size=400x400&sensor=false&language=en&channel=somechannel&'
+            'signature=Y-D-iEMbWPfUTjBtKEYDbGUtElY=')
+
+        vmap = VisibleMap(maptype='terrain', clientid='gme-exampleid', secret='bbXgwW0k3631Bl2V5Z34gs9vYgf=', channel='somechannel')
+        vmap.add_address('Sugarbowl, Truckee, CA')
+        vmap.add_address('Tahoe City, CA')
+
+        self.assertEqual(
+            vmap.generate_url(),
+            'https://maps.googleapis.com/maps/api/staticmap?client=gme-exampleid&maptype=terrain&'
+            'format=png&scale=1&size=400x400&sensor=false&'
+            'visible=Sugarbowl%2C%20Truckee%2C%20CA%7CTahoe%20City%2C%20CA&'
+            'language=en&channel=somechannel&signature=KQvz4Q3rB6Pmr7sJ_sM4qfKQzDo=')
+
+        styles = [{
+            'feature': 'road.highway',
+            'element': 'geomoetry',
+            'rules': {
+                'color': '#c280e9'
+            }
+        }]
+        decorated_map = DecoratedMap(style=styles, clientid='gme-exampleid', secret='bbXgwW0k3631Bl2V5Z34gs9vYgf=', channel='somechannel')
+        decorated_map.add_marker(LatLonMarker('37.422782', '-122.085099',
+                                              label='G'))
+        self.assertEqual(
+            decorated_map.generate_url(),
+            'https://maps.googleapis.com/maps/api/staticmap?client=gme-exampleid&maptype=roadmap&'
+            'format=png&scale=1&size=400x400&sensor=false&language=en&'
+            'markers=%7Clabel%3AG%7C37.422782%2C-122.085099&'
+            'style=feature%3Aroad.highway%7Celement%3Ageomoetry%7C'
+            'color%3A0xc280e9%7C&channel=somechannel&signature=IPHCEq1ifL7Chuwu604pMtN6eGw='
+        )
 
 if __name__ == "__main__":
     unittest.main()

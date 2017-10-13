@@ -1,3 +1,6 @@
+import base64
+import hmac
+import hashlib
 import re
 from six.moves.urllib.parse import quote, urlparse
 from gpolyencode import GPolyEncoder
@@ -96,8 +99,15 @@ class LatLonMarker(Marker):
 class Map(object):
     MAX_URL_LEN = 8192  # https://developers.google.com/maps/documentation/static-maps/intro#url-size-restriction
 
-    def __init__(self, size_x, size_y, maptype, zoom=None, scale=1, key=None, language='en', style=None):
-        self.base_url = 'https://maps.googleapis.com/maps/api/staticmap?'
+    def __init__(self, size_x, size_y, maptype, zoom=None, scale=1, key=None, language='en', style=None, clientid=None, secret=None, channel=None):
+        if key is not None and clientid is not None:
+            raise ValueError('Only one of key and clientid may be passed')
+        if channel is not None and clientid is None:
+            raise ValueError('Must pass clientid if channel is passed')
+        if clientid is not None and secret is None:
+            raise ValueError('Must pass secret if clientid is passed')
+        self.base_url = 'https://maps.googleapis.com'
+        self.url_path = '/maps/api/staticmap?'
         self.size_x = size_x
         self.size_y = size_y
         self.sensor = False
@@ -106,6 +116,9 @@ class Map(object):
         self.zoom = zoom
         self.scale = scale
         self.key = key
+        self.clientid = clientid
+        self.secret = secret
+        self.channel = channel
         self.language = language
         self.style = style
 
@@ -121,8 +134,19 @@ class Map(object):
     def _get_key(self):
         if self.key:
             return ''.join(['key=', self.key, '&'])
+        elif self.clientid:
+            return ''.join(['client=', self.clientid, '&'])
         else:
             return ''
+
+    def _sign(self, url):
+        if self.secret:
+            decoded_key = base64.urlsafe_b64decode(self.secret)
+            # (normalise URL before signing - fails Google's signature checks otherwise)
+            signature = hmac.new(decoded_key, url.replace('%7E', '~').encode('utf-8'), hashlib.sha1)
+            return url + '&signature=' + base64.urlsafe_b64encode(signature.digest()).decode('utf-8')
+        else:
+            return url
 
     def _check_url(self, url):
         if len(url) > Map.MAX_URL_LEN:
@@ -134,9 +158,9 @@ class Map(object):
 class CenterMap(Map):
 
     def __init__(self, address=None, lat=None, lon=None, zoom=17, size_x=400,
-                 size_y=400, maptype='roadmap', scale=1, key=None, style=None, language='en'):
+                 size_y=400, maptype='roadmap', scale=1, key=None, style=None, language='en', clientid=None, secret=None, channel=None):
         Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype,
-                     zoom=zoom, scale=scale, key=key, style=style, language=language)
+                     zoom=zoom, scale=scale, key=key, style=style, language=language, clientid=clientid, secret=secret, channel=channel)
         if address:
             self.center = quote(address)
         elif lat and lon:
@@ -156,8 +180,10 @@ class CenterMap(Map):
             self.size_y,
             self._get_sensor(),
             self.language)
+        if self.channel:
+            query += '&channel=%s' % (self.channel)
 
-        url = self.base_url + quote(query, safe='/&=%')
+        url = self.base_url + self._sign(self.url_path + quote(query, safe='/&=%'))
 
         self._check_url(url)
         return url
@@ -165,8 +191,8 @@ class CenterMap(Map):
 
 class VisibleMap(Map):
 
-    def __init__(self, size_x=400, size_y=400, maptype='roadmap', scale=1, key=None, style=None, language='en'):
-        Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype, scale=scale, key=key, style=style, language=language)
+    def __init__(self, size_x=400, size_y=400, maptype='roadmap', scale=1, key=None, style=None, language='en', clientid=None, secret=None, channel=None):
+        Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype, scale=scale, key=key, style=style, language=language, clientid=clientid, secret=secret, channel=channel)
         self.locations = []
 
     def add_address(self, address):
@@ -186,8 +212,10 @@ class VisibleMap(Map):
             self._get_sensor(),
             "|".join(self.locations),
             self.language)
+        if self.channel:
+            query += '&channel=%s' % (self.channel)
 
-        url = self.base_url + quote(query, safe='/&=%')
+        url = self.base_url + self._sign(self.url_path + quote(query, safe='/&=%'))
 
         self._check_url(url)
 
@@ -201,9 +229,9 @@ class DecoratedMap(Map):
     def __init__(self, lat=None, lon=None, zoom=None, size_x=400, size_y=400,
                  maptype='roadmap', scale=1, region=False, fillcolor='green',
                  pathweight=None, pathcolor=None, key=None, style=None,
-                 simplify_threshold_meters=1.11111, language='en'):
+                 simplify_threshold_meters=1.11111, language='en', clientid=None, secret=None, channel=None):
         Map.__init__(self, size_x=size_x, size_y=size_y, maptype=maptype,
-                     zoom=zoom, scale=scale, key=key, style=style, language=language)
+                     zoom=zoom, scale=scale, key=key, style=style, language=language, clientid=clientid, secret=secret, channel=channel)
         self.markers = []
         self.fillcolor = fillcolor
         self.pathweight = pathweight
@@ -343,7 +371,10 @@ class DecoratedMap(Map):
                 for prop, rule in style_map['rules'].items():
                     query = "%s%s:%s|" % (query, prop, str(rule).replace('#', '0x'))
 
-        url = self.base_url + quote(query, safe='/&=%')
+        if self.channel:
+            query += '&channel=%s' % (self.channel)
+
+        url = self.base_url + self._sign(self.url_path + quote(query, safe='/&=%'))
 
         self._check_url(url)
 
