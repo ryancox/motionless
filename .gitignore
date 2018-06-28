@@ -80,4 +80,7 @@ ENV/
 .ropeproject
 
 # IDEA settings
-.idea
+.idea/
+
+# pytest
+.pytest_cache/
