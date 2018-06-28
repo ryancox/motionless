@@ -12,12 +12,12 @@ python:
 install:
   - pip install geojson
   - pip install coveralls
-  - pip install nose
+  - pip install pytest
+  - pip install pytest-cov
   - pip install -e .
 
-# command to run tests, e.g. python setup.py test
 script:
-  - nosetests --with-coverage --cover-package motionless
+  - pytest . --cov=motionless --cov-report term-missing;
 
 after_success:
   - coveralls
