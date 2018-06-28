@@ -14,12 +14,7 @@ from gpolyencode import GPolyEncoder
     For details about the GoogleStatic Map API see:
         http://code.google.com/apis/maps/documentation/staticmaps/
 
-    If you encounter problems, log an issue on github. If you have questions, drop me an
-    email at ryan.a.cox@gmail.com.
-
-"""
-
-"""
+    If you encounter problems, log an issue on github. 
 
       Copyright 2010 Ryan A Cox - ryan.a.cox@gmail.com
 

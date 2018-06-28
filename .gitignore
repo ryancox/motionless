@@ -80,4 +80,4 @@ ENV/
 .ropeproject
 
 # IDEA settings
-.idea
+.idea/
