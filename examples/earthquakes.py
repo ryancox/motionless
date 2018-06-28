@@ -17,7 +17,7 @@ gjs = geojson.loads(opener.read().decode('utf-8'))
 
 # Prepare a map and add the points
 gmap = DecoratedMap(size_x=640, size_y=440)
-for feat in gjs.features:
+for feat in gjs.features[:260]:  # in case there are many earthquakes today
     magnitude = feat['properties']['mag']
     lon, lat, _ = feat['geometry']["coordinates"]
     if magnitude > 2:
