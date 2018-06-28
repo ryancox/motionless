@@ -59,7 +59,7 @@ zoomed to make the specified elements visible.
 
 ```python
 from motionless import DecoratedMap, LatLonMarker
-dmap = DecoratedMap()
+dmap = DecoratedMap(maptype='satellite')
 dmap.add_marker(LatLonMarker(27.988056, 86.925278, label='S'))
 dmap.add_marker(LatLonMarker(28.007222, 86.859444, label='B'))
 print(dmap.generate_url())
