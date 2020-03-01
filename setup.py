@@ -6,7 +6,7 @@ from motionless import __version__
 METADATA = dict(
     name = "motionless",
     version = __version__,
-    py_modules = ['setup', 'motionless', 'gpolyencode'],
+    packages = ['motionless'],
     author = 'Ryan Cox',
     author_email = 'ryan.a.cox@gmail.com',
     description = 'An easy way to generate Google Static Map URLs with Python.',
@@ -19,7 +19,7 @@ METADATA = dict(
 
 # Setuptools version
 SETUPTOOLS_METADATA = dict(
-    install_requires = ['setuptools', 'six'],
+    install_requires = ['setuptools'],
     include_package_data = True,
     classifiers = [
         'Development Status :: 4 - Beta',
