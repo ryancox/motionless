@@ -3,9 +3,9 @@ from __future__ import print_function
 from motionless import LatLonMarker, DecoratedMap
 
 try:
-    import urllib as request
-except ImportError:
     from urllib import request
+except ImportError:
+    import urllib as request
 
 try:
     import geojson
