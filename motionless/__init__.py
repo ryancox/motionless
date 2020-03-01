@@ -2,8 +2,12 @@ import base64
 import hmac
 import hashlib
 import re
-from six.moves.urllib.parse import quote, urlparse
-from gpolyencode import GPolyEncoder
+try:
+    from urllib import quote
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import quote, urlparse
+from .gpolyencode import GPolyEncoder
 
 """
     motionless is a library that takes the pain out of generating Google Static Map URLs.

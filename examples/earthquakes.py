@@ -1,7 +1,12 @@
 """Get the current USGS earthquake feed and add it to a DecoratedMap."""
 from __future__ import print_function
 from motionless import LatLonMarker, DecoratedMap
-from six.moves.urllib import request
+
+try:
+    import urllib as request
+except ImportError:
+    from urllib import request
+
 try:
     import geojson
 except ImportError:
