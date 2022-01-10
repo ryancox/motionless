@@ -23,6 +23,23 @@ This means that if you want to continue using motionless, you'll need to
 generate and use a personal API key.
 
 
+
+Installation instructions
+=========================
+
+Motionless is a pure python package. Install it with conda (or mamba):
+
+```
+$ conda install -c conda-forge motionless
+```
+
+or pip:
+
+```
+$ pip install motionless
+```
+
+
 CenterMap
 =========
 
