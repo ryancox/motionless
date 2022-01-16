@@ -8,7 +8,7 @@ motionless
 
 motionless is a Python library that takes the pain out of generating [Google Static Map](http://code.google.com/apis/maps/documentation/staticmaps/) URLs. Three map types are supported. Each is illustrated below. For fully worked code see the examples directory for code that parses and visualizes both GeoRSS feeds and GPX files.
 
-motionless is tested with Python versions 2.7, 3.4, 3.5 and 3.6.
+motionless is tested with Python versions 2.7 and 3.7 to 3.10.
 
 Code is licensed under Apache 2.0
 
@@ -21,7 +21,6 @@ Important
 As of October 2018, Google Static Map API [no longer supports keyless access](https://developers.google.com/maps/documentation/maps-static/usage-and-billing).
 This means that if you want to continue using motionless, you'll need to
 generate and use a personal API key.
-
 
 
 Installation instructions
