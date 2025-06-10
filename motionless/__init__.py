@@ -1,9 +1,11 @@
 import base64
-import hmac
 import hashlib
+import hmac
 import re
+
 try:
     from urllib import quote
+
     from urlparse import urlparse
 except ImportError:
     from urllib.parse import quote, urlparse
@@ -18,7 +20,7 @@ from .gpolyencode import GPolyEncoder
     For details about the GoogleStatic Map API see:
         http://code.google.com/apis/maps/documentation/staticmaps/
 
-    If you encounter problems, log an issue on github. 
+    If you encounter problems, log an issue on github.
 
       Copyright 2010 Ryan A Cox - ryan.a.cox@gmail.com
 
@@ -38,10 +40,10 @@ from .gpolyencode import GPolyEncoder
 
 
 __author__ = "Ryan Cox <ryan.a.cox@gmail.com>"
-__version__ = "1.4.dev"
+__version__ = "1.4.0"
 
 
-class Color(object):
+class Color:
     COLORS = ['black', 'brown', 'green', 'purple',
               'yellow', 'blue', 'gray', 'orange', 'red', 'white']
     pat = re.compile("0x[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8}")
@@ -50,22 +52,20 @@ class Color(object):
     def is_valid_color(color):
         return Color.pat.match(color) or color in Color.COLORS
 
-class Marker(object):
+class Marker:
     SIZES = ['tiny', 'mid', 'small']
     LABELS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
     def __init__(self, size, color, label, icon_url):
         if size and size not in Marker.SIZES:
             raise ValueError(
-                "[%s] is not a valid marker size. Valid sizes include %s" %
-                (size, Marker.SIZES))
-        if label and (len(label) != 1 or not label in Marker.LABELS):
+                f"[{size}] is not a valid marker size. Valid sizes include {Marker.SIZES}")
+        if label and (len(label) != 1 or label not in Marker.LABELS):
             raise ValueError(
                 "[%s] is not a valid label. Valid labels are a single character 'A'..'Z' or '0'..'9'" % label)
         if color and not Color.is_valid_color(color):
             raise ValueError(
-                "[%s] is not a valid color. Valid colors include %s" %
-                (color, Color.COLORS))
+                f"[{color}] is not a valid color. Valid colors include {Color.COLORS}")
         if icon_url and not self.check_icon_url(icon_url):
             raise ValueError(
                 "[%s] is not a valid url." % icon_url
@@ -95,7 +95,7 @@ class LatLonMarker(Marker):
         self.longitude = lon
 
 
-class Map(object):
+class Map:
     MAX_URL_LEN = 8192  # https://developers.google.com/maps/documentation/static-maps/intro#url-size-restriction
 
     def __init__(self, size_x, size_y, maptype, zoom=None, scale=1, key=None, language='en', style=None, clientid=None, secret=None, channel=None):
@@ -150,8 +150,7 @@ class Map(object):
     def _check_url(self, url):
         if len(url) > Map.MAX_URL_LEN:
             raise ValueError(
-                "Generated URL is %s characters in length. Maximum is %s" %
-                (len(url), Map.MAX_URL_LEN))
+                f"Generated URL is {len(url)} characters in length. Maximum is {Map.MAX_URL_LEN}")
 
 
 class CenterMap(Map):
@@ -163,12 +162,12 @@ class CenterMap(Map):
         if address:
             self.center = quote(address)
         elif lat and lon:
-            self.center = "%s,%s" % (lat, lon)
+            self.center = f"{lat},{lon}"
         else:
             self.center = "1600 Amphitheatre Parkway Mountain View, CA"
 
     def generate_url(self):
-        query = "%smaptype=%s&format=%s&scale=%s&center=%s&zoom=%s&size=%sx%s&sensor=%s&language=%s" % (
+        query = "{}maptype={}&format={}&scale={}&center={}&zoom={}&size={}x{}&sensor={}&language={}".format(
             self._get_key(),
             self.maptype,
             self.format,
@@ -198,10 +197,10 @@ class VisibleMap(Map):
         self.locations.append(quote(address))
 
     def add_latlon(self, lat, lon):
-        self.locations.append("%s,%s" % (quote(lat), quote(lon)))
+        self.locations.append(f"{quote(lat)},{quote(lon)}")
 
     def generate_url(self):
-        query = "%smaptype=%s&format=%s&scale=%s&size=%sx%s&sensor=%s&visible=%s&language=%s" % (
+        query = "{}maptype={}&format={}&scale={}&size={}x{}&sensor={}&visible={}&language={}".format(
             self._get_key(),
             self.maptype,
             self.format,
@@ -243,7 +242,7 @@ class DecoratedMap(Map):
         else:
             self.simplify_threshold = simplify_threshold_meters / DecoratedMap.METERS_PER_DEGREE
         if lat and lon:
-            self.center = "%s,%s" % (lat, lon)
+            self.center = f"{lat},{lon}"
         else:
             self.center = None
 
@@ -261,13 +260,11 @@ class DecoratedMap(Map):
 
         if not Color.is_valid_color(self.fillcolor):
             raise ValueError(
-                "%s is not a valid fill color. Must be 24 or 32 bit value or one of %s" %
-                (self.fillcolor, Color.COLORS))
+                f"{self.fillcolor} is not a valid fill color. Must be 24 or 32 bit value or one of {Color.COLORS}")
 
         if self.pathcolor and not Color.is_valid_color(self.pathcolor):
             raise ValueError(
-                "%s is not a valid path color. Must be 24 or 32 bit value or one of %s" %
-                (self.pathcolor, Color.COLORS))
+                f"{self.pathcolor} is not a valid path color. Must be 24 or 32 bit value or one of {Color.COLORS}")
 
     def _generate_markers(self):
         styles = set()
@@ -285,7 +282,7 @@ class DecoratedMap(Map):
                 data[(marker.size, marker.color, marker.label, marker.icon_url)
                      ].append(quote(marker.address))
             if isinstance(marker, LatLonMarker):
-                location = "%s,%s" % (marker.latitude, marker.longitude)
+                location = f"{marker.latitude},{marker.longitude}"
                 data[(marker.size, marker.color, marker.label, marker.icon_url)
                      ].append(location)
         # build markers entries for URL
@@ -324,11 +321,11 @@ class DecoratedMap(Map):
         self.path.append(quote(address))
 
     def add_path_latlon(self, lat, lon):
-        self.path.append("%s,%s" % (quote(str(lat)), quote(str(lon))))
+        self.path.append(f"{quote(str(lat))},{quote(str(lon))}")
 
     def generate_url(self):
         self.check_parameters()
-        query = "%smaptype=%s&format=%s&scale=%s&size=%sx%s&sensor=%s&language=%s" % (
+        query = "{}maptype={}&format={}&scale={}&size={}x{}&sensor={}&language={}".format(
             self._get_key(),
             self.maptype,
             self.format,
@@ -339,36 +336,36 @@ class DecoratedMap(Map):
             self.language)
 
         if self.center:
-            query = "%s&center=%s" % (query, self.center)
+            query = f"{query}&center={self.center}"
 
         if self.zoom:
-            query = "%s&zoom=%s" % (query, self.zoom)
+            query = f"{query}&zoom={self.zoom}"
 
         if len(self.markers) > 0:
-            query = "%s&%s" % (query, self._generate_markers())
+            query = f"{query}&{self._generate_markers()}"
 
         if len(self.path) > 0:
             query = "%s&path=" % query
 
             if self.pathcolor:
-                query = "%scolor:%s|" % (query, self.pathcolor)
+                query = f"{query}color:{self.pathcolor}|"
 
             if self.pathweight:
-                query = "%sweight:%s|" % (query, self.pathweight)
+                query = f"{query}weight:{self.pathweight}|"
 
             if self.region:
-                query = "%sfillcolor:%s|" % (query, self.fillcolor)
+                query = f"{query}fillcolor:{self.fillcolor}|"
 
-            query = "%senc:%s" % (query, quote(self._polyencode()))
+            query = f"{query}enc:{quote(self._polyencode())}"
 
         if self.style:
             for style_map in self.style:
-                query = "%s&style=feature:%s|element:%s|" % (
+                query = "{}&style=feature:{}|element:{}|".format(
                     query,
                     (style_map['feature'] if 'feature' in style_map else 'all'),
                     (style_map['element'] if 'element' in style_map else 'all'))
                 for prop, rule in style_map['rules'].items():
-                    query = "%s%s:%s|" % (query, prop, str(rule).replace('#', '0x'))
+                    query = "{}{}:{}|".format(query, prop, str(rule).replace('#', '0x'))
 
         if self.channel:
             query += '&channel=%s' % (self.channel)

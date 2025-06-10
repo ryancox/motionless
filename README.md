@@ -8,7 +8,7 @@ motionless
 
 motionless is a Python library that takes the pain out of generating [Google Static Map](http://code.google.com/apis/maps/documentation/staticmaps/) URLs. Three map types are supported. Each is illustrated below. For fully worked code see the examples directory for code that parses and visualizes both GeoRSS feeds and GPX files.
 
-motionless is tested with Python versions 3.9 to 3.11.
+motionless requires Python 3.9 or later and is tested with Python versions 3.9 to 3.13.
 
 Code is licensed under Apache 2.0
 
@@ -26,16 +26,52 @@ generate and use a personal API key.
 Installation instructions
 =========================
 
-Motionless is a pure python package. Install it with conda (or mamba):
+Motionless is a pure Python package and can be installed using various package managers:
 
-```
-$ conda install -c conda-forge motionless
+### Using pip (traditional)
+
+```bash
+pip install motionless
 ```
 
-or pip:
+### Using uv (recommended, fastest)
 
+```bash
+# Install uv if you haven't already
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install motionless
+uv pip install motionless
 ```
-$ pip install motionless
+
+### Using conda/mamba
+
+```bash
+conda install -c conda-forge motionless
+# or
+mamba install -c conda-forge motionless
+```
+
+### For development
+
+If you want to contribute to motionless or run the latest development version:
+
+```bash
+# Clone the repository
+git clone https://github.com/ryancox/motionless.git
+cd motionless
+
+# Install uv if you haven't already
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install poetry via uv
+uv tool install poetry
+
+# Install dependencies and the package in development mode
+poetry install
+
+# Run tests
+poetry run pytest
 ```
 
 
