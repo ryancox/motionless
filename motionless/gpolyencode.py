@@ -41,13 +41,14 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
 import math
+
 try:
     from StringIO import StringIO
 except ImportError:
     from io import StringIO
 
 
-class GPolyEncoder(object):
+class GPolyEncoder:
 
     def __init__(self, num_levels=18, zoom_factor=2, threshold=0.00001,
                  force_endpoints=True):

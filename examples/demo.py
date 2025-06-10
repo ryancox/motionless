@@ -1,6 +1,5 @@
 """Examples of the various maps that can be created with motionless."""
-from __future__ import print_function
-from motionless import AddressMarker, DecoratedMap, CenterMap, VisibleMap
+from motionless import AddressMarker, CenterMap, DecoratedMap, VisibleMap
 
 cmap = CenterMap(address='151 third st, san francisco, ca')
 
@@ -16,24 +15,20 @@ dmap.add_marker(AddressMarker('1600 Amphitheatre Parkway Mountain View, CA',
                               label='G'))
 
 
-htmlPage = """
+htmlPage = f"""
 <html>
 <body>
 <h2>SFMOMA</h2>
-<img src="%s"/>
+<img src="{cmap.generate_url()}"/>
 <h2>La Tour Eiffel</h2>
-<img src="%s"/>
+<img src="{cmap_sat.generate_url()}"/>
 <h2>Tahoe City and Sugarbowl</h2>
-<img src="%s"/>
+<img src="{vmap.generate_url()}"/>
 <h2>Google and Apple</h2>
-<img src="%s"/>
+<img src="{dmap.generate_url()}"/>
 </body>
 </html>
-""" % (
-    cmap.generate_url(), 
-    cmap_sat.generate_url(),
-    vmap.generate_url(), 
-    dmap.generate_url()) 
+"""
 
 with open("demo.html", "w") as html:
     html.write(htmlPage)

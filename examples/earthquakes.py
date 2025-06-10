@@ -1,6 +1,5 @@
 """Get the current USGS earthquake feed and add it to a DecoratedMap."""
-from __future__ import print_function
-from motionless import LatLonMarker, DecoratedMap
+from motionless import DecoratedMap, LatLonMarker
 
 try:
     from urllib import request

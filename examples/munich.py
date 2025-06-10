@@ -1,9 +1,8 @@
 """Parse a GPS track and add it to a DecoratedMap."""
-from __future__ import print_function
-import xml.sax
 import os
-from motionless import LatLonMarker, DecoratedMap
+import xml.sax
 
+from motionless import DecoratedMap, LatLonMarker
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -11,11 +10,11 @@ class GPXHandler(xml.sax.handler.ContentHandler):
     """GPS track parser"""
     def __init__(self, gmap):
         self.gmap = gmap
-        self.first = True 
+        self.first = True
         self.prev = None
 
     def startElement(self, name, attrs):
-        if name == 'trkpt': 
+        if name == 'trkpt':
             self.gmap.add_path_latlon(attrs['lat'], attrs['lon'])
             self.prev = (attrs['lat'], attrs['lon'])
             if self.first:
