@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "motionless"
+version = "1.4.dev"
+description = "An easy way to generate Google Static Map URLs with Python."
+authors = ["Ryan Cox <ryan.a.cox@gmail.com>"]
+license = "Apache-2.0"
+readme = "README.md"
+packages = [{ include = "motionless" }]
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+
+[build-system]
+requires = ["poetry-core>=1.5.0"]
+build-backend = "poetry.core.masonry.api"
