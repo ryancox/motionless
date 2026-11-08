@@ -15,7 +15,7 @@ except ImportError:
 
 # Get the geojson feed from USGS
 opener = request.urlopen('http://earthquake.usgs.gov/earthquakes/feed/v1.0'
-                         '/summary/2.5_day.geojson')
+                         '/summary/2.5_day.geojson', timeout=30)
 
 # Parse it
 gjs = geojson.loads(opener.read().decode('utf-8'))
